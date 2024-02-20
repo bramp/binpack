@@ -28,7 +28,7 @@ extension RectangleSplitExt<T extends num> on Rectangle<T> {
   /// then a single split is returned.
   ///
   /// ![Example diagram](https://github.com/TeamHypersomnia/rectpack2D/raw/master/images/diag01.png)
-  List<Rectangle<T>> split(Rectangle<T> other) {
+  (Rectangle<T>?, Rectangle<T>?) split(Rectangle<T> other) {
     // The input is already checked in [pack],
     assert(other.left == 0 && other.top == 0);
     assert(other.area > 0);
@@ -47,7 +47,7 @@ extension RectangleSplitExt<T extends num> on Rectangle<T> {
       // |      Other     |
       // |      /this     |
       // ------------------
-      return []; // No space left.
+      return (null, null); // No space left.
     }
 
     if (other.height == height) {
@@ -55,14 +55,15 @@ extension RectangleSplitExt<T extends num> on Rectangle<T> {
       // |  Other  | ret  |
       // |         |      |
       // ------------------
-      return [
+      return (
         Rectangle(
           (left + other.width) as T,
           top,
           (width - other.width) as T,
           height,
-        )
-      ];
+        ),
+        null,
+      );
     }
 
     if (other.width == width) {
@@ -72,14 +73,15 @@ extension RectangleSplitExt<T extends num> on Rectangle<T> {
       // -----------
       // |  ret    |
       // -----------
-      return [
+      return (
         Rectangle(
           left,
           (top + other.height) as T,
           width,
           (height - other.height) as T,
-        )
-      ];
+        ),
+        null,
+      );
     }
     // ------------------
     // |  Other  |   A  |
@@ -89,7 +91,7 @@ extension RectangleSplitExt<T extends num> on Rectangle<T> {
     // |                |
     // ------------------
 
-    return [
+    return (
       Rectangle(
         (left + other.width) as T,
         top,
@@ -102,6 +104,6 @@ extension RectangleSplitExt<T extends num> on Rectangle<T> {
         width,
         (height - other.height) as T,
       ), // B
-    ];
+    );
   }
 }

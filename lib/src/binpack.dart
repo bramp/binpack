@@ -7,19 +7,28 @@ import 'package:collection/collection.dart';
 
 /// Packs a list of rectangles into a single larger space.
 class Binpacker<K> {
+  /// The max width
   final num width;
+
+  /// The max height
   final num height;
 
   // Free is sorted by area, decending.
   // The smallest is area is thus always last, and hopefully the one we always
   // pop off.
-  final List<Rectangle> free = [];
+  final List<Rectangle> _free = [];
+
+  /// The rectangles that didn't fit.
   final discards = <K>[];
+
+  /// The placements of the rectangles.
+  // TODO Maybe just update the original provided rects with their positions.
   final placements = <(K, Rectangle)>[];
 
+  /// Create a new Binpacker with a max width and height.
   Binpacker(this.width, this.height) {
     // Add the entire space as a starting area.
-    free.add(Rectangle(0, 0, width, height));
+    _free.add(Rectangle(0, 0, width, height));
   }
 
   /// Return the index of the smallest free Rectangle that will fit [rect].
@@ -27,8 +36,8 @@ class Binpacker<K> {
   int _bestFitIndex(Rectangle rect) {
     // Search from the back (where the smallest rects are)
     // This could be a binary search, but the list is small.
-    for (var i = free.length - 1; i >= 0; i--) {
-      if (free[i].width >= rect.width && free[i].height >= rect.height) {
+    for (var i = _free.length - 1; i >= 0; i--) {
+      if (_free[i].width >= rect.width && _free[i].height >= rect.height) {
         return i;
       }
     }
@@ -38,6 +47,8 @@ class Binpacker<K> {
   /// Pack the rectangles in to the space in the order they are given.
   /// As opposed to [pack], which may reorder the input to get a better packing.
   void packInOrder(List<(K, Rectangle)> inputs) {
+    inputs = UnmodifiableListView(inputs);
+
     for (final input in inputs) {
       final key = input.$1;
       final rect = input.$2;
@@ -50,7 +61,7 @@ class Binpacker<K> {
       }
 
       // We can insert into this rect
-      final freeRect = free.removeAt(i);
+      final freeRect = _free.removeAt(i);
       //print("Delete $i from ${free.length}");
 
       // Place the input in the top left corner
@@ -60,19 +71,24 @@ class Binpacker<K> {
       ));
 
       // Add the new splits.
-      final splits = freeRect.split(rect);
+      final (a, b) = freeRect.split(rect);
 
       // Do insertion sort.
-      for (final s in splits) {
-        final i = free.lowerBound(s, compareByArea);
-        free.insert(i, s);
-        //  //print(i);
+      if (a != null) {
+        final i = _free.lowerBound(a, compareByArea);
+        _free.insert(i, a);
       }
+      if (b != null) {
+        final i = _free.lowerBound(b, compareByArea);
+        _free.insert(i, b);
+      }
+
       //print(free.map((e) => e.area));
-      assert(free.isSorted(compareByArea));
+      assert(_free.isSorted(compareByArea));
 
       // Brute force add and sort.
-      //free.addAll(splits);
+      //if (a != null) free.add(a);
+      //if (b != null) free.add(b);
       //free.sort(compareByArea);
     }
   }
@@ -135,13 +151,13 @@ class Binpacker<K> {
   /// The percentage of space used in the min bounding box of all the placements.
   double ratio() {
     final usedArea = placements.fold<num>(0, (a, b) => a + b.$2.area);
+    final bounds = boundingBox();
 
-    final r = boundingBox();
-    return usedArea / r.area;
+    return usedArea / bounds.area;
   }
 
   String stats() {
-    final box = boundingBox();
-    return "${box.width}x${box.height} placed: ${placements.length} / ${placements.length + discards.length}, percent: ${ratio() * 100}%";
+    final bounds = boundingBox();
+    return "${bounds.width}x${bounds.height} placed: ${placements.length} / ${placements.length + discards.length}, percent: ${ratio() * 100}%";
   }
 }

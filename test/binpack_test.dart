@@ -48,7 +48,7 @@ void main() {
   });
 
   test('BinarySearchBinpacker().pack()', () async {
-    final packer = BinarySearchBinpacker();
+    final packer = SearchBinpacker();
     packer.pack(inputs.indexed.toList());
 
     print(packer.stats());

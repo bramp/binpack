@@ -15,7 +15,7 @@ class BinarySearchBinpackerBenchmark extends BenchmarkBase {
   // The benchmark code.
   @override
   void run() {
-    final packer = BinarySearchBinpacker();
+    final packer = SearchBinpacker();
     packer.pack(inputs.indexed.toList());
   }
 

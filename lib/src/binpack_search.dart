@@ -4,7 +4,7 @@ import 'package:binpack/binpack.dart';
 import 'package:binpack/src/rectangle.dart';
 
 /// Packs a list of rectangles into the smallest possible space.
-class BinarySearchBinpacker<K> {
+class SearchBinpacker<K> {
   Binpacker<K>? best;
 
   void pack(List<(K, Rectangle)> inputs) {

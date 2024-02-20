@@ -14,7 +14,7 @@ void main() {
         () {
       final rect = Rectangle(1, 2, 10, 20);
       final other = Rectangle(0, 0, 10, 20);
-      expect(rect.split(other), isEmpty);
+      expect(rect.split(other), equals((null, null)));
     });
 
     test('split should throw exception when other rectangle is larger', () {
@@ -36,9 +36,9 @@ void main() {
       // -----------
       final rect = Rectangle(1, 2, 10, 20);
       final other = Rectangle(0, 0, 10, 5);
-      final expected = [Rectangle(1, 7, 10, 15)];
+      final expected = (Rectangle(1, 7, 10, 15), null);
 
-      expect(rect.area, other.area + expected[0].area);
+      expect(rect.area, other.area + expected.$1.area);
 
       final splits = rect.split(other);
       expect(splits, equals(expected));
@@ -49,9 +49,9 @@ void main() {
         () {
       final rect = Rectangle(1, 2, 20, 10);
       final other = Rectangle(0, 0, 5, 10);
-      final expected = [Rectangle(6, 2, 15, 10)];
+      final expected = (Rectangle(6, 2, 15, 10), null);
 
-      expect(rect.area, other.area + expected[0].area);
+      expect(rect.area, other.area + expected.$1.area);
 
       final splits = rect.split(other);
       expect(splits, equals(expected));
@@ -71,12 +71,12 @@ void main() {
       final rect = Rectangle(1, 2, 20, 30);
       final other = Rectangle(0, 0, 5, 10);
 
-      final expected = [
+      final expected = (
         Rectangle(6, 2, 15, 10), //A
         Rectangle(1, 12, 20, 20), //B
-      ];
+      );
 
-      expect(rect.area, other.area + expected[0].area + expected[1].area);
+      expect(rect.area, other.area + expected.$1.area + expected.$2.area);
 
       final splits = rect.split(other);
       expect(splits, equals(expected));
