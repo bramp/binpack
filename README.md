@@ -1,5 +1,9 @@
 Simple library for 2D bin packing, as used for texture atlases.
 
+[![Pub package](https://img.shields.io/pub/v/binpack.svg)](https://pub.dev/packages/binpack)
+[![Pub publisher](https://img.shields.io/pub/publisher/binpack.svg)](https://pub.dev/publishers/bramp.net/packages)
+[![Dart Analysis](https://github.com/bramp/binpack/actions/workflows/dart.yml/badge.svg)](https://github.com/bramp/binpack/actions/workflows/dart.yml)
+
 ## Features
 
 Takes a list of rectangles and packs them into a larger rectangle, with the goal

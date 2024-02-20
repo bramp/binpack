@@ -1,12 +1,11 @@
 name: binpack
-description: A starting point for Dart libraries or applications.
+description: Simple library for 2D bin packing, as used for texture atlases.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/bramp/binpack
 
 environment:
   sdk: ^3.3.0
 
-# Add regular dependencies here.
 dependencies:
   collection: ^1.18.0
 
