@@ -12,18 +12,16 @@ void main() {
     ('image4.png', Rectangle(0, 0, 300, 400)),
   ];
 
-  // Target the max size 4096 x 4096
-  final packer = Binpacker(4096, 4096);
+  // Target the max size 4096 x 4096.
+  var results = Binpacker(4096, 4096) //
+      .pack(rects);
 
-  // and pack them
-  packer.pack(rects);
-
-  // The size we actually needed:
-  print(packer.boundingBox());
+  // The size we actually needed (which may be smaller than 4096, 4096)
+  print(results.boundingBox());
   // Rectangle (0, 0) 560 x 400
 
   // Now get the list of placements
-  print(packer.placements);
+  print(results.placements);
   // [
   //  (image4.png, Rectangle (0, 0) 300 x 400),
   //  (image1.png, Rectangle (300, 0) 100 x 200),
@@ -32,19 +30,19 @@ void main() {
   // ]
 
   // If some rectangles didn't fit, you can get them
-  print(packer.discards);
+  print(results.discards);
 
   // Print some stats
-  print(packer.stats());
+  print(results.stats());
   // placed: 4 / 4, percent: 69.12%
 
-  // If you don't know the target size, use
-  final searchPacker = SearchBinpacker();
-  searchPacker.pack(rects);
+  // If you don't know the target size, use SearchBinpacker. It will iteratively
+  // try different target sizes, and return the optimal one.
+  results = SearchBinpacker().pack(rects);
 
   // The size we actually needed:
-  print(packer.stats());
+  print(results.stats());
 
   // and use the placements
-  print(searchPacker.best!.placements);
+  print(results.placements);
 }

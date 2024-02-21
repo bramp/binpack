@@ -24,11 +24,11 @@ void main() {
   group('Binpacker().pack()', () {
     for (final s in inputs.indexed) {
       test('scenario ${s.$1}', () {
-        final packer = Binpacker(4096, 4096);
-        packer.pack(s.$2.indexed.toList());
+        final results = Binpacker(4096, 4096) //
+            .pack(s.$2.indexed.toList());
 
         //print(packer.stats());
-        final rects = packer.discards.length + packer.placements.length;
+        final rects = results.discards.length + results.placements.length;
         expect(rects, equals(s.$2.length));
 
         //await placementToSVG(packer);
@@ -39,16 +39,14 @@ void main() {
   group('SearchBinpacker().pack()', () {
     for (final s in inputs.indexed) {
       test('scenario ${s.$1}', () async {
-        final packer = SearchBinpacker();
-        packer.pack(s.$2.indexed.toList());
+        final results = SearchBinpacker() //
+            .pack(s.$2.indexed.toList());
 
-        expect(packer.best, isNotNull);
-        expect(packer.best!.discards, isEmpty);
-        expect(packer.best!.placements.length, equals(s.$2.length));
-        expect(packer.best!.ratio(), greaterThan(0.90));
+        expect(results.discards, isEmpty);
+        expect(results.placements.length, equals(s.$2.length));
+        expect(results.ratio(), greaterThan(0.90));
 
-        await placementToSVG(packer.best!,
-            filename: "test/scenario/${s.$1}.svg");
+        await placementToSVG(results, filename: "test/scenario/${s.$1}.svg");
       });
     }
   });
@@ -56,13 +54,13 @@ void main() {
 
 /// Draws a SVG of the placements.
 Future<dynamic> placementToSVG<K>(
-  final Binpacker packer, {
+  final Result results, {
   String filename = "output.svg",
 }) async {
   final f = File(filename);
   final w = f.openWrite();
 
-  final bounds = packer.boundingBox();
+  final bounds = results.boundingBox();
 
   w.writeln('<?xml version="1.0" encoding="UTF-8"?>');
   w.writeln('<svg width="640"'
@@ -75,7 +73,7 @@ Future<dynamic> placementToSVG<K>(
       ' fill="black" />');
 
   final r = Random(0); // Seeded so we get the same sequence each time.
-  for (final placement in packer.placements) {
+  for (final placement in results.placements) {
     final rect = placement.$2;
 
     final hue = r.nextInt(360);

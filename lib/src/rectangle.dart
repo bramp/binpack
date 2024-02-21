@@ -12,12 +12,13 @@ int Function(Rectangle a, Rectangle b) compareByArea =
 int Function(Rectangle a, Rectangle b) compareByWidth =
     (Rectangle a, Rectangle b) => b.width.compareTo(a.width);
 
-/// Compare two rectangles by area, ascending.
-int Function(Rectangle a, Rectangle b) compareByAreaAsc =
-    (Rectangle a, Rectangle b) => a.area.compareTo(b.area);
+/// Compare two rectangles by perimeter, decending. (That is 2*width+height).
+int Function(Rectangle a, Rectangle b) compareByPerimeter =
+    (Rectangle a, Rectangle b) => b.width.compareTo(a.width);
 
-extension RectangleAreaExt<T extends num> on Rectangle<T> {
+extension RectangleExt<T extends num> on Rectangle<T> {
   T get area => (width * height) as T;
+  T get perimeter => (2 * (width + height)) as T;
 }
 
 extension RectangleSplitExt<T extends num> on Rectangle<T> {

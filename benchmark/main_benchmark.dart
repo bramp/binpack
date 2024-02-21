@@ -25,11 +25,11 @@ class SearchBinpackerBenchmark extends BenchmarkBase {
     for (final e in inputs.indexed) {
       final input = e.$2;
 
-      final packer = SearchBinpacker();
-      packer.pack(input.indexed.toList());
+      final results = SearchBinpacker() //
+          .pack(input.indexed.toList());
 
       final i = e.$1;
-      ratios[i] = packer.best!.ratio();
+      ratios[i] = results.ratio();
     }
   }
 
