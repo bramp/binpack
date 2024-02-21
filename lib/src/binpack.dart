@@ -1,9 +1,16 @@
 // TODO: Put public facing types in this file.
 
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:binpack/src/rectangle.dart';
 import 'package:collection/collection.dart';
+
+final class EntryItem extends LinkedListEntry<EntryItem> {
+  final Rectangle rect;
+
+  EntryItem(this.rect);
+}
 
 /// The result of bin packing. Look at [discards] and [placements] for where
 /// each rectangle ended up.
@@ -15,8 +22,8 @@ class Result<K> {
   final List<(K, Rectangle)> placements;
 
   const Result({
-    required this.discards,
-    required this.placements,
+    this.discards = const [],
+    this.placements = const [],
   });
 
   /// Returns the smallest bounding box after packing. This will always be smaller or equal
@@ -70,6 +77,27 @@ class Result<K> {
   }
 }
 
+// Returns the index where [element] should be in this sorted list.
+EntryItem? quickLowerBound(EntryItem? start, Rectangle element,
+    int Function(Rectangle, Rectangle) compare) {
+  if (start == null) {
+    return null;
+  }
+
+  // Use a linear search
+  // It seems when using using list.lowerBound dart can't do some
+  // optomisation on the compare function, so this linear search ends up being
+  // faster (even for larger lists).
+  for (EntryItem? i = start; i != null; i = i.next) {
+    // TODO change to start.
+    if (compare(i.rect, element) >= 0) {
+      return i;
+    }
+  }
+
+  return null;
+}
+
 /// Packs a list of rectangles into a single larger space.
 class Binpacker<K> {
   /// The max width
@@ -81,7 +109,10 @@ class Binpacker<K> {
   // Free is sorted by area, decending.
   // The smallest is area is thus always last, and hopefully the one we always
   // pop off.
-  final List<Rectangle> _free = [];
+  // This used to be a simple Array, but the insert/remove caused a lot of
+  // copying. A linked list is faster, even if we can't do O(1) lookups and
+  // binary searches.
+  final LinkedList<EntryItem> _free = LinkedList<EntryItem>();
 
   /// The rectangles that didn't fit.
   final _discards = <K>[];
@@ -92,40 +123,40 @@ class Binpacker<K> {
   /// Create a new Binpacker with a max width and height.
   Binpacker(this.width, this.height) {
     // Add the entire space as a starting area.
-    _free.add(Rectangle(0, 0, width, height));
+    _free.add(EntryItem(Rectangle(0, 0, width, height)));
   }
 
   /// Return the index of the smallest free Rectangle that will fit [rect].
   /// Returns -1 if no free space is found.
-  int _bestFitIndex(Rectangle rect) {
+  EntryItem? _bestFitIndex(Rectangle rect) {
     // Search from the back (where the smallest rects are)
-    // This could be a binary search, but the list is small.
-    for (var i = _free.length - 1; i >= 0; i--) {
-      if (_free[i].width >= rect.width && _free[i].height >= rect.height) {
+    for (EntryItem? i = _free.last; i != null; i = i.previous) {
+      final f = i.rect;
+      if (f.width >= rect.width && f.height >= rect.height) {
         return i;
       }
     }
-    return -1;
+    return null;
   }
 
   /// Pack the rectangles in to the space in the order they are given.
   /// As opposed to [pack], which may reorder the input to get a better packing.
-  Result<K> packInOrder(List<(K, Rectangle)> inputs) {
+  Result<K> packInOrder(Iterable<(K, Rectangle)> inputs) {
     inputs = UnmodifiableListView(inputs);
 
     for (final input in inputs) {
       final key = input.$1;
       final rect = input.$2;
-      final i = _bestFitIndex(rect);
+      final best = _bestFitIndex(rect);
 
-      if (i == -1) {
+      if (best == null) {
         // No free space
         _discards.add(key);
         continue;
       }
 
       // We can insert into this rect
-      final freeRect = _free.removeAt(i);
+      final freeRect = best.rect;
 
       // Place the input in the top left corner
       _placements.add((
@@ -138,15 +169,32 @@ class Binpacker<K> {
 
       // Do insertion sort.
       if (a != null) {
-        final i = _free.lowerBound(a, compareByArea);
-        _free.insert(i, a);
-      }
-      if (b != null) {
-        final i = _free.lowerBound(b, compareByArea);
-        _free.insert(i, b);
+        final i = quickLowerBound(best.next, a, compareByArea);
+        //print("Insert a $i");
+        if (i == null) {
+          _free.add(EntryItem(a));
+        } else {
+          i.insertBefore(EntryItem(a));
+        }
       }
 
-      assert(_free.isSorted(compareByArea));
+      if (b != null) {
+        assert(a != null, 'b set but a was not');
+
+        final i = quickLowerBound(best.next, b, compareByArea);
+        //print("Insert b $i");
+        if (i == null) {
+          _free.add(EntryItem(b));
+        } else {
+          i.insertBefore(EntryItem(b));
+        }
+      }
+
+      // Remove the rect we just split
+      // We do this last, so we can reference best in the quickLowerBound search.
+      best.unlink();
+
+      assert(_free.map((e) => e.rect).isSorted(compareByArea));
     }
 
     return Result(

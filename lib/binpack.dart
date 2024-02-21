@@ -3,5 +3,5 @@
 /// More dartdocs go here.
 library;
 
-export 'src/binpack.dart';
-export 'src/binpack_search.dart';
+export 'src/binpack.dart' show Result, Binpacker;
+export 'src/binpack_search.dart' show SearchBinpacker;
