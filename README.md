@@ -26,13 +26,11 @@ final rects = [
 ];
 
 // Target the max size 4096 x 4096
-final packer = Binpacker(4096, 4096);
-
-// and pack them
-packer.pack(rects);
+final results = Binpacker(4096, 4096).pack(rects);
 
 // The rectangles are now packed and their positions available:
-print(packer.placements);
+print(results.placements);
+
 ```
 
 ## Example
