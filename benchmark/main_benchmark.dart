@@ -11,27 +11,27 @@ class SearchBinpackerBenchmark extends BenchmarkBase {
   SearchBinpackerBenchmark() : super('SearchBinpackerBenchmark');
 
   // Real example shapes I had to pack
-  final inputs = scenarios.map(
-    (scenario) {
-      return scenario.entries
-          .map((e) => List.filled(e.value, rectangleFromString(e.key)))
-          .expand((element) => element)
-          .toList();
-    },
-  ).toList();
+  final inputs = scenarios
+      .map(
+        (scenario) => scenario.entries
+            .map((e) => List.filled(e.value, rectangleFromString(e.key)))
+            .expand((element) => element)
+            .toList(),
+      )
+      .toList();
 
-  final ratios = List.filled(scenarios.length, 0.0);
+  final results = List.filled(scenarios.length, const Result());
 
   @override
   void run() {
     for (final e in inputs.indexed) {
       final input = e.$2;
 
-      final results = SearchBinpacker() //
+      final result = SearchBinpacker() //
           .pack(input.indexed.toList());
 
       final i = e.$1;
-      ratios[i] = results.ratio();
+      results[i] = result;
     }
   }
 
@@ -39,10 +39,11 @@ class SearchBinpackerBenchmark extends BenchmarkBase {
   void report() {
     print('$name(RunTime): ${measure() / 1000000} seconds');
 
-    final stats = Stats.fromData(ratios);
+    final stats = Stats.fromData(results.map((e) => e.ratio()));
     print('$name(Min Ratio): ${(stats.min * 100).toStringAsFixed(2)}%');
     print('$name(Max Ratio): ${(stats.max * 100).toStringAsFixed(2)}%');
     print('$name(Median Ratio): ${(stats.median * 100).toStringAsFixed(2)}%');
+    print('$name(Discards): ${results.map((e) => e.discards.length).sum}');
   }
 }
 
