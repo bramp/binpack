@@ -74,26 +74,6 @@ class Result<K> {
   }
 }
 
-// Returns the index where [element] should be in this sorted list.
-EntryItem? quickLowerBound(EntryItem? start, Rectangle element,
-    int Function(Rectangle, Rectangle) compare) {
-  if (start == null) {
-    return null;
-  }
-
-  // Use a linear search
-  // It seems when using using list.lowerBound dart can't do some
-  // optomisation on the compare function, so this linear search ends up being
-  // faster (even for larger lists).
-  for (EntryItem? i = start; i != null; i = i.next) {
-    if (compare(i.rect, element) >= 0) {
-      return i;
-    }
-  }
-
-  return null;
-}
-
 /// Packs a list of rectangles into a single larger space.
 class Binpacker<K> {
   /// Create a new Binpacker with a max width and height.
@@ -135,6 +115,21 @@ class Binpacker<K> {
     return null;
   }
 
+  /// Returns the index where [element] should be in the [start] sorted list.
+  /// Uses the area of the elements to make the decision.
+  static EntryItem? _quickLowerBound(
+      EntryItem? start, final Rectangle element) {
+    // Use a linear search
+    final area = element.area;
+    for (EntryItem? i = start; i != null; i = i.next) {
+      if (i.rect.area <= area) {
+        return i;
+      }
+    }
+
+    return null;
+  }
+
   /// Pack the rectangles in to the space in the order they are given.
   /// As opposed to [pack], which may reorder the input to get a better packing.
   Result<K> packInOrder(Iterable<(K, Rectangle)> inputs) {
@@ -165,7 +160,7 @@ class Binpacker<K> {
 
       // Do insertion sort.
       if (a != null) {
-        final i = quickLowerBound(best.next, a, compareByArea);
+        final i = _quickLowerBound(best.next, a);
         //print("Insert a $i");
         if (i == null) {
           _free.add(EntryItem(a));
@@ -177,7 +172,7 @@ class Binpacker<K> {
       if (b != null) {
         assert(a != null, 'b set but a was not');
 
-        final i = quickLowerBound(best.next, b, compareByArea);
+        final i = _quickLowerBound(best.next, b);
         //print("Insert b $i");
         if (i == null) {
           _free.add(EntryItem(b));

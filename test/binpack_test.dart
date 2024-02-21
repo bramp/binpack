@@ -6,13 +6,13 @@ import 'package:test/test.dart';
 
 import 'scenarios.dart';
 
-Rectangle rectangleFromString(String size) {
+Rectangle<int> rectangleFromString(String size) {
   final parts = size.split('x');
   return Rectangle(0, 0, int.parse(parts[0]), int.parse(parts[1]));
 }
 
 void main() {
-  final List<List<Rectangle>> inputs = scenarios
+  final List<List<Rectangle<int>>> inputs = scenarios
       .map(
         (scenario) => scenario.entries
             .map((e) => List.filled(e.value, rectangleFromString(e.key)))
