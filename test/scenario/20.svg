@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="640" viewBox="0 0 1296 134" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1296" height="134" x="0" y="0" fill="black" />
+  <rect name="0" width="144" height="134" x="0" y="0" shape-rendering="crispEdges" style="fill: hsl(255, 100%, 50%);" />
+  <rect name="1" width="144" height="134" x="144" y="0" shape-rendering="crispEdges" style="fill: hsl(329, 100%, 50%);" />
+  <rect name="2" width="144" height="134" x="288" y="0" shape-rendering="crispEdges" style="fill: hsl(244, 100%, 50%);" />
+  <rect name="3" width="144" height="134" x="432" y="0" shape-rendering="crispEdges" style="fill: hsl(259, 100%, 50%);" />
+  <rect name="4" width="144" height="134" x="576" y="0" shape-rendering="crispEdges" style="fill: hsl(6, 100%, 50%);" />
+  <rect name="5" width="144" height="134" x="720" y="0" shape-rendering="crispEdges" style="fill: hsl(231, 100%, 50%);" />
+  <rect name="6" width="144" height="134" x="864" y="0" shape-rendering="crispEdges" style="fill: hsl(14, 100%, 50%);" />
+  <rect name="7" width="144" height="134" x="1008" y="0" shape-rendering="crispEdges" style="fill: hsl(121, 100%, 50%);" />
+  <rect name="8" width="144" height="134" x="1152" y="0" shape-rendering="crispEdges" style="fill: hsl(121, 100%, 50%);" />
+</svg>

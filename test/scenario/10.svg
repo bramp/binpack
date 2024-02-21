@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="640" viewBox="0 0 11083 1069" xmlns="http://www.w3.org/2000/svg">
+  <rect width="11083" height="1069" x="0" y="0" fill="black" />
+  <rect name="25" width="506" height="424" x="0" y="0" shape-rendering="crispEdges" style="fill: hsl(255, 100%, 50%);" />
+  <rect name="36" width="867" height="421" x="506" y="0" shape-rendering="crispEdges" style="fill: hsl(329, 100%, 50%);" />
+  <rect name="34" width="796" height="419" x="1373" y="0" shape-rendering="crispEdges" style="fill: hsl(244, 100%, 50%);" />
+  <rect name="37" width="933" height="417" x="2169" y="0" shape-rendering="crispEdges" style="fill: hsl(259, 100%, 50%);" />
+  <rect name="23" width="488" height="417" x="3102" y="0" shape-rendering="crispEdges" style="fill: hsl(6, 100%, 50%);" />
+  <rect name="31" width="718" height="416" x="3590" y="0" shape-rendering="crispEdges" style="fill: hsl(231, 100%, 50%);" />
+  <rect name="26" width="516" height="415" x="4308" y="0" shape-rendering="crispEdges" style="fill: hsl(14, 100%, 50%);" />
+  <rect name="32" width="743" height="413" x="4824" y="0" shape-rendering="crispEdges" style="fill: hsl(121, 100%, 50%);" />
+  <rect name="35" width="867" height="411" x="5567" y="0" shape-rendering="crispEdges" style="fill: hsl(121, 100%, 50%);" />
+  <rect name="28" width="574" height="410" x="6434" y="0" shape-rendering="crispEdges" style="fill: hsl(89, 100%, 50%);" />
+  <rect name="30" width="680" height="410" x="7008" y="0" shape-rendering="crispEdges" style="fill: hsl(159, 100%, 50%);" />
+  <rect name="27" width="559" height="409" x="7688" y="0" shape-rendering="crispEdges" style="fill: hsl(58, 100%, 50%);" />
+  <rect name="22" width="441" height="406" x="8247" y="0" shape-rendering="crispEdges" style="fill: hsl(272, 100%, 50%);" />
+  <rect name="29" width="645" height="398" x="8688" y="0" shape-rendering="crispEdges" style="fill: hsl(312, 100%, 50%);" />
+  <rect name="20" width="372" height="390" x="9333" y="0" shape-rendering="crispEdges" style="fill: hsl(291, 100%, 50%);" />
+  <rect name="38" width="996" height="376" x="9705" y="0" shape-rendering="crispEdges" style="fill: hsl(254, 100%, 50%);" />
+  <rect name="33" width="781" height="369" x="0" y="424" shape-rendering="crispEdges" style="fill: hsl(217, 100%, 50%);" />
+  <rect name="24" width="505" height="369" x="781" y="424" shape-rendering="crispEdges" style="fill: hsl(125, 100%, 50%);" />
+  <rect name="17" width="1193" height="365" x="1286" y="424" shape-rendering="crispEdges" style="fill: hsl(8, 100%, 50%);" />
+  <rect name="14" width="1147" height="362" x="2479" y="424" shape-rendering="crispEdges" style="fill: hsl(13, 100%, 50%);" />
+  <rect name="21" width="382" height="359" x="10701" y="0" shape-rendering="crispEdges" style="fill: hsl(203, 100%, 50%);" />
+  <rect name="8" width="1115" height="358" x="3626" y="424" shape-rendering="crispEdges" style="fill: hsl(55, 100%, 50%);" />
+  <rect name="3" width="1070" height="353" x="4741" y="424" shape-rendering="crispEdges" style="fill: hsl(150, 100%, 50%);" />
+  <rect name="7" width="1115" height="350" x="5811" y="424" shape-rendering="crispEdges" style="fill: hsl(141, 100%, 50%);" />
+  <rect name="11" width="1133" height="331" x="6926" y="424" shape-rendering="crispEdges" style="fill: hsl(156, 100%, 50%);" />
+  <rect name="16" width="1183" height="327" x="8059" y="424" shape-rendering="crispEdges" style="fill: hsl(170, 100%, 50%);" />
+  <rect name="15" width="1150" height="288" x="9242" y="424" shape-rendering="crispEdges" style="fill: hsl(217, 100%, 50%);" />
+  <rect name="9" width="1123" height="276" x="0" y="793" shape-rendering="crispEdges" style="fill: hsl(256, 100%, 50%);" />
+  <rect name="6" width="1087" height="275" x="1123" y="793" shape-rendering="crispEdges" style="fill: hsl(244, 100%, 50%);" />
+  <rect name="10" width="1127" height="274" x="2210" y="793" shape-rendering="crispEdges" style="fill: hsl(42, 100%, 50%);" />
+  <rect name="12" width="1135" height="274" x="3337" y="793" shape-rendering="crispEdges" style="fill: hsl(70, 100%, 50%);" />
+  <rect name="13" width="1140" height="273" x="4472" y="793" shape-rendering="crispEdges" style="fill: hsl(270, 100%, 50%);" />
+  <rect name="0" width="1054" height="257" x="5612" y="793" shape-rendering="crispEdges" style="fill: hsl(8, 100%, 50%);" />
+  <rect name="1" width="1057" height="257" x="6666" y="793" shape-rendering="crispEdges" style="fill: hsl(286, 100%, 50%);" />
+  <rect name="5" width="1074" height="251" x="7723" y="793" shape-rendering="crispEdges" style="fill: hsl(32, 100%, 50%);" />
+  <rect name="4" width="1071" height="251" x="8797" y="793" shape-rendering="crispEdges" style="fill: hsl(188, 100%, 50%);" />
+  <rect name="2" width="1064" height="251" x="9868" y="793" shape-rendering="crispEdges" style="fill: hsl(176, 100%, 50%);" />
+  <rect name="19" width="303" height="241" x="10392" y="424" shape-rendering="crispEdges" style="fill: hsl(304, 100%, 50%);" />
+  <rect name="18" width="261" height="217" x="10695" y="424" shape-rendering="crispEdges" style="fill: hsl(292, 100%, 50%);" />
+</svg>

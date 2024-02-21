@@ -4,55 +4,53 @@ import 'dart:io';
 import 'package:binpack/binpack.dart';
 import 'package:test/test.dart';
 
+import 'scenarios.dart';
+
 Rectangle rectangleFromString(String size) {
   final parts = size.split("x");
   return Rectangle(0, 0, int.parse(parts[0]), int.parse(parts[1]));
 }
 
 void main() {
-  // Real example shapes I had to pack
-  final inputSizes = {
-    "160x160": 2,
-    "230x230": 11,
-    "300x299": 1,
-    "300x300": 290,
-    "346x346": 2,
-    "360x360": 12,
-    "400x275": 1,
-    "400x400": 4,
-    "405x405": 1,
-  };
+  final List<List<Rectangle>> inputs = scenarios.map(
+    (scenario) {
+      return scenario.entries
+          .map((e) => List.filled(e.value, rectangleFromString(e.key)))
+          .expand((element) => element)
+          .toList();
+    },
+  ).toList();
 
-  final inputs = <Rectangle>[];
+  group('Binpacker().pack()', () {
+    for (final s in inputs.indexed) {
+      test('scenario ${s.$1}', () {
+        final packer = Binpacker(4096, 4096);
+        packer.pack(s.$2.indexed.toList());
 
-  setUp(() {
-    inputSizes.map((key, value) => MapEntry(rectangleFromString(key), value));
-    for (final e in inputSizes.entries) {
-      final rect = rectangleFromString(e.key);
+        //print(packer.stats());
+        final rects = packer.discards.length + packer.placements.length;
+        expect(rects, equals(s.$2.length));
 
-      for (var i = 0; i < e.value; i++) {
-        inputs.add(rect);
-      }
+        //await placementToSVG(packer);
+      });
     }
   });
 
-  test('Binpacker().pack()', () async {
-    final packer = Binpacker(4096, 4096);
-    packer.pack(inputs.indexed.toList());
+  group('SearchBinpacker().pack()', () {
+    for (final s in inputs.indexed) {
+      test('scenario ${s.$1}', () async {
+        final packer = SearchBinpacker();
+        packer.pack(s.$2.indexed.toList());
 
-    print(packer.stats());
-    // Placed: 158, Percent: 81.67505264282227%
-    // Placed: 168, Percent: 94.10713315010071% (by area desc)
-    // Placed: 168, Percent: 94.20905709266663% (by height desc)
-    await placementToSVG(packer);
-  });
+        expect(packer.best, isNotNull);
+        expect(packer.best!.discards, isEmpty);
+        expect(packer.best!.placements.length, equals(s.$2.length));
+        expect(packer.best!.ratio(), greaterThan(0.90));
 
-  test('BinarySearchBinpacker().pack()', () async {
-    final packer = SearchBinpacker();
-    packer.pack(inputs.indexed.toList());
-
-    print(packer.stats());
-    await placementToSVG(packer.best!);
+        await placementToSVG(packer.best!,
+            filename: "test/scenario/${s.$1}.svg");
+      });
+    }
   });
 }
 
@@ -64,13 +62,15 @@ Future<dynamic> placementToSVG<K>(
   final f = File(filename);
   final w = f.openWrite();
 
+  final bounds = packer.boundingBox();
+
   w.writeln('<?xml version="1.0" encoding="UTF-8"?>');
   w.writeln('<svg width="640"'
-      ' viewBox="0 0 ${packer.width} ${packer.height}"'
+      ' viewBox="0 0 ${bounds.width} ${bounds.height}"'
       ' xmlns="http://www.w3.org/2000/svg">');
 
   w.writeln('  <rect'
-      ' width="${packer.width}" height="${packer.height}"'
+      ' width="${bounds.width}" height="${bounds.height}"'
       ' x="0" y="0"'
       ' fill="black" />');
 
