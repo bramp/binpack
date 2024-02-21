@@ -6,14 +6,13 @@ import 'package:collection/collection.dart';
 
 /// Packs a list of rectangles into the smallest possible space.
 class SearchBinpacker<K> {
-  Result<K> _best = Result();
+  /// Create a new SearchBinpacker.
+  SearchBinpacker({this.searchAttempts = 100});
+  Result<K> _best = const Result();
 
   /// How many different widths to try. The higher the number, the better the
   /// placements, but the slower the search.
   final int searchAttempts;
-
-  /// Create a new SearchBinpacker.
-  SearchBinpacker({this.searchAttempts = 100});
 
   Result<K> pack(List<(K, Rectangle)> inputs) {
     // Sort by height descending tends to produce good results
@@ -60,7 +59,5 @@ class SearchBinpacker<K> {
     return _best;
   }
 
-  String stats() {
-    return _best.stats();
-  }
+  String stats() => _best.stats();
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:math';
 
 import 'package:binpack/binpack.dart';
@@ -6,10 +8,10 @@ void main() {
   // Create a list of key and rectanges.
   // The key can be anything specific to your application.
   final rects = [
-    ('image1.png', Rectangle(0, 0, 100, 200)), // Image 100x200 pixels
-    ('image2.png', Rectangle(0, 0, 32, 64)),
-    ('image3.png', Rectangle(0, 0, 128, 100)),
-    ('image4.png', Rectangle(0, 0, 300, 400)),
+    ('image1.png', const Rectangle(0, 0, 100, 200)), // Image 100x200 pixels
+    ('image2.png', const Rectangle(0, 0, 32, 64)),
+    ('image3.png', const Rectangle(0, 0, 128, 100)),
+    ('image4.png', const Rectangle(0, 0, 300, 400)),
   ];
 
   // Target the max size 4096 x 4096.

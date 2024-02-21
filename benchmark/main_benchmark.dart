@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:binpack/binpack.dart';
 import 'package:stats/stats.dart';

@@ -1,5 +1,5 @@
-import 'dart:math';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:binpack/binpack.dart';
 import 'package:test/test.dart';
@@ -7,19 +7,19 @@ import 'package:test/test.dart';
 import 'scenarios.dart';
 
 Rectangle rectangleFromString(String size) {
-  final parts = size.split("x");
+  final parts = size.split('x');
   return Rectangle(0, 0, int.parse(parts[0]), int.parse(parts[1]));
 }
 
 void main() {
-  final List<List<Rectangle>> inputs = scenarios.map(
-    (scenario) {
-      return scenario.entries
-          .map((e) => List.filled(e.value, rectangleFromString(e.key)))
-          .expand((element) => element)
-          .toList();
-    },
-  ).toList();
+  final List<List<Rectangle>> inputs = scenarios
+      .map(
+        (scenario) => scenario.entries
+            .map((e) => List.filled(e.value, rectangleFromString(e.key)))
+            .expand((element) => element)
+            .toList(),
+      )
+      .toList();
 
   group('Binpacker().pack()', () {
     for (final s in inputs.indexed) {
@@ -46,7 +46,7 @@ void main() {
         expect(results.placements.length, equals(s.$2.length));
         expect(results.ratio(), greaterThan(0.90));
 
-        await placementToSVG(results, filename: "test/scenario/${s.$1}.svg");
+        await placementToSVG(results, filename: 'test/scenario/${s.$1}.svg');
       });
     }
   });
@@ -55,7 +55,7 @@ void main() {
 /// Draws a SVG of the placements.
 Future<dynamic> placementToSVG<K>(
   final Result results, {
-  String filename = "output.svg",
+  String filename = 'output.svg',
 }) async {
   final f = File(filename);
   final w = f.openWrite();

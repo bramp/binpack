@@ -1,5 +1,3 @@
-// TODO: Put public facing types in this file.
-
 import 'dart:collection';
 import 'dart:math';
 
@@ -7,30 +5,29 @@ import 'package:binpack/src/rectangle.dart';
 import 'package:collection/collection.dart';
 
 final class EntryItem extends LinkedListEntry<EntryItem> {
-  final Rectangle rect;
-
   EntryItem(this.rect);
+  final Rectangle rect;
 }
 
 /// The result of bin packing. Look at [discards] and [placements] for where
 /// each rectangle ended up.
 class Result<K> {
+  const Result({
+    this.discards = const [],
+    this.placements = const [],
+  });
+
   /// The rectangles that didn't fit.
   final List<K> discards;
 
   /// The placements of the rectangles.
   final List<(K, Rectangle)> placements;
 
-  const Result({
-    this.discards = const [],
-    this.placements = const [],
-  });
-
   /// Returns the smallest bounding box after packing. This will always be smaller or equal
   /// to the input dimensions.
   Rectangle boundingBox() {
     if (placements.isEmpty) {
-      return Rectangle(0, 0, 0, 0);
+      return const Rectangle(0, 0, 0, 0);
     }
 
     // The below is a faster version of this:
@@ -89,7 +86,6 @@ EntryItem? quickLowerBound(EntryItem? start, Rectangle element,
   // optomisation on the compare function, so this linear search ends up being
   // faster (even for larger lists).
   for (EntryItem? i = start; i != null; i = i.next) {
-    // TODO change to start.
     if (compare(i.rect, element) >= 0) {
       return i;
     }
@@ -100,6 +96,12 @@ EntryItem? quickLowerBound(EntryItem? start, Rectangle element,
 
 /// Packs a list of rectangles into a single larger space.
 class Binpacker<K> {
+  /// Create a new Binpacker with a max width and height.
+  Binpacker(this.width, this.height) {
+    // Add the entire space as a starting area.
+    _free.add(EntryItem(Rectangle(0, 0, width, height)));
+  }
+
   /// The max width
   final num width;
 
@@ -119,12 +121,6 @@ class Binpacker<K> {
 
   /// The placements of the rectangles.
   final _placements = <(K, Rectangle)>[];
-
-  /// Create a new Binpacker with a max width and height.
-  Binpacker(this.width, this.height) {
-    // Add the entire space as a starting area.
-    _free.add(EntryItem(Rectangle(0, 0, width, height)));
-  }
 
   /// Return the index of the smallest free Rectangle that will fit [rect].
   /// Returns -1 if no free space is found.
@@ -215,11 +211,11 @@ class Binpacker<K> {
     for (final input in inputs) {
       if (input.$2.left != 0 || input.$2.top != 0) {
         throw Exception(
-            "All rectangles must have left and top set to 0, ${input.$1} does not.");
+            'All rectangles must have left and top set to 0, ${input.$1} does not.');
       }
       if (input.$2.area <= 0) {
         throw Exception(
-            "All rectangles must have a positive area, ${input.$1} does not.");
+            'All rectangles must have a positive area, ${input.$1} does not.');
       }
     }
 
