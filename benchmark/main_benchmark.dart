@@ -1,57 +1,49 @@
-import 'dart:math';
-
 import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:binpack/binpack.dart';
+import 'package:stats/stats.dart';
 
 import '../test/binpack_test.dart';
+import '../test/scenarios.dart';
 
-// Create a new benchmark by extending BenchmarkBase
-class BinarySearchBinpackerBenchmark extends BenchmarkBase {
-  BinarySearchBinpackerBenchmark() : super('BinarySearchBinpackerBenchmark');
+class SearchBinpackerBenchmark extends BenchmarkBase {
+  SearchBinpackerBenchmark() : super('SearchBinpackerBenchmark');
 
   // Real example shapes I had to pack
-  final inputs = <Rectangle>[];
+  final inputs = scenarios.map(
+    (scenario) {
+      return scenario.entries
+          .map((e) => List.filled(e.value, rectangleFromString(e.key)))
+          .expand((element) => element)
+          .toList();
+    },
+  ).toList();
 
-  // The benchmark code.
+  final ratios = List.filled(scenarios.length, 0.0);
+
   @override
   void run() {
-    final packer = SearchBinpacker();
-    packer.pack(inputs.indexed.toList());
-  }
+    for (final e in inputs.indexed) {
+      final input = e.$2;
 
-  // Not measured setup code executed prior to the benchmark runs.
-  @override
-  void setup() {
-    final inputSizes = {
-      "160x160": 2,
-      "230x230": 11,
-      "300x299": 1,
-      "300x300": 290,
-      "346x346": 2,
-      "360x360": 12,
-      "400x275": 1,
-      "400x400": 4,
-      "405x405": 1,
-    };
-    inputSizes.map((key, value) => MapEntry(rectangleFromString(key), value));
-    for (final e in inputSizes.entries) {
-      final rect = rectangleFromString(e.key);
+      final packer = SearchBinpacker();
+      packer.pack(input.indexed.toList());
 
-      for (var i = 0; i < e.value; i++) {
-        inputs.add(rect);
-      }
+      final i = e.$1;
+      ratios[i] = packer.best!.ratio();
     }
   }
 
-  // Not measured teardown code executed after the benchmark runs.
   @override
-  void teardown() {}
+  void report() {
+    print('$name(RunTime): ${measure() / 1000000} seconds');
 
-  // To opt into the reporting the time per run() instead of per 10 run() calls.
-  //@override
-  //void exercise() => run();
+    final stats = Stats.fromData(ratios);
+    print('$name(Min Ratio): ${(stats.min * 100).toStringAsFixed(2)}%');
+    print('$name(Max Ratio): ${(stats.max * 100).toStringAsFixed(2)}%');
+    print('$name(Median Ratio): ${(stats.median * 100).toStringAsFixed(2)}%');
+  }
 }
 
 void main() {
-  BinarySearchBinpackerBenchmark().report();
+  SearchBinpackerBenchmark().report();
 }

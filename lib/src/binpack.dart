@@ -62,7 +62,6 @@ class Binpacker<K> {
 
       // We can insert into this rect
       final freeRect = _free.removeAt(i);
-      //print("Delete $i from ${free.length}");
 
       // Place the input in the top left corner
       placements.add((
@@ -83,17 +82,12 @@ class Binpacker<K> {
         _free.insert(i, b);
       }
 
-      //print(free.map((e) => e.area));
       assert(_free.isSorted(compareByArea));
-
-      // Brute force add and sort.
-      //if (a != null) free.add(a);
-      //if (b != null) free.add(b);
-      //free.sort(compareByArea);
     }
   }
 
   /// Pack the rectangles in to the space, possibly after reordering.
+  // TODO Allow the sort order to be specified.
   void pack(List<(K, Rectangle)> inputs) {
     for (final input in inputs) {
       if (input.$2.left != 0 || input.$2.top != 0) {
