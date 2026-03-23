@@ -73,19 +73,19 @@ Future<void> placementToSVG<K>(
 
   final bounds = results.boundingBox();
 
-  w.writeln('<?xml version="1.0" encoding="UTF-8"?>');
-  w.writeln(
-    '<svg width="640"'
-    ' viewBox="0 0 ${bounds.width} ${bounds.height}"'
-    ' xmlns="http://www.w3.org/2000/svg">',
-  );
-
-  w.writeln(
-    '  <rect'
-    ' width="${bounds.width}" height="${bounds.height}"'
-    ' x="0" y="0"'
-    ' fill="black" />',
-  );
+  w
+    ..writeln('<?xml version="1.0" encoding="UTF-8"?>')
+    ..writeln(
+      '<svg width="640"'
+      ' viewBox="0 0 ${bounds.width} ${bounds.height}"'
+      ' xmlns="http://www.w3.org/2000/svg">',
+    )
+    ..writeln(
+      '  <rect'
+      ' width="${bounds.width}" height="${bounds.height}"'
+      ' x="0" y="0"'
+      ' fill="black" />',
+    );
 
   final r = Random(0); // Seeded so we get the same sequence each time.
   for (final placement in results.placements) {

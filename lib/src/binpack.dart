@@ -188,8 +188,8 @@ class Binpacker<K> {
         }
       }
 
-      // Remove the rect we just split
-      // We do this last, so we can reference best in the quickLowerBound search.
+      // Remove the rect we just split. We do this last, so we can
+      // reference best in the quickLowerBound search.
       best.unlink();
 
       assert(

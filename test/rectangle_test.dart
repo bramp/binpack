@@ -31,64 +31,55 @@ void main() {
       );
     });
 
-    test(
-      'split should return correct splits when other rectangle fits perfectly along top',
-      () {
-        // -----------
-        // |  Other  |
-        // |         |
-        // -----------
-        // | expected|
-        // -----------
-        const rect = Rectangle(1, 2, 10, 20);
-        const other = Rectangle(0, 0, 10, 5);
-        const expected = (Rectangle(1, 7, 10, 15), null);
+    test('split: other rectangle fits perfectly along top', () {
+      // -----------
+      // |  Other  |
+      // |         |
+      // -----------
+      // | expected|
+      // -----------
+      const rect = Rectangle(1, 2, 10, 20);
+      const other = Rectangle(0, 0, 10, 5);
+      const expected = (Rectangle(1, 7, 10, 15), null);
 
-        expect(rect.area, other.area + expected.$1.area);
+      expect(rect.area, other.area + expected.$1.area);
 
-        final splits = rect.split(other);
-        expect(splits, equals(expected));
-      },
-    );
+      final splits = rect.split(other);
+      expect(splits, equals(expected));
+    });
 
-    test(
-      'split should return correct splits when other rectangle fits perfectly along side',
-      () {
-        const rect = Rectangle(1, 2, 20, 10);
-        const other = Rectangle(0, 0, 5, 10);
-        const expected = (Rectangle(6, 2, 15, 10), null);
+    test('split: other rectangle fits perfectly along side', () {
+      const rect = Rectangle(1, 2, 20, 10);
+      const other = Rectangle(0, 0, 5, 10);
+      const expected = (Rectangle(6, 2, 15, 10), null);
 
-        expect(rect.area, other.area + expected.$1.area);
+      expect(rect.area, other.area + expected.$1.area);
 
-        final splits = rect.split(other);
-        expect(splits, equals(expected));
-      },
-    );
+      final splits = rect.split(other);
+      expect(splits, equals(expected));
+    });
 
-    test(
-      'split should return correct splits when other rectangle fits imperfectly',
-      () {
-        // ------------------
-        // |  Other  |   A  |
-        // |         |      |
-        // -----------......|
-        // |       B        |
-        // |                |
-        // ------------------
+    test('split: other rectangle fits imperfectly', () {
+      // ------------------
+      // |  Other  |   A  |
+      // |         |      |
+      // -----------......|
+      // |       B        |
+      // |                |
+      // ------------------
 
-        const rect = Rectangle(1, 2, 20, 30);
-        const other = Rectangle(0, 0, 5, 10);
+      const rect = Rectangle(1, 2, 20, 30);
+      const other = Rectangle(0, 0, 5, 10);
 
-        const expected = (
-          Rectangle(6, 2, 15, 10), //A
-          Rectangle(1, 12, 20, 20), //B
-        );
+      const expected = (
+        Rectangle(6, 2, 15, 10), //A
+        Rectangle(1, 12, 20, 20), //B
+      );
 
-        expect(rect.area, other.area + expected.$1.area + expected.$2.area);
+      expect(rect.area, other.area + expected.$1.area + expected.$2.area);
 
-        final splits = rect.split(other);
-        expect(splits, equals(expected));
-      },
-    );
+      final splits = rect.split(other);
+      expect(splits, equals(expected));
+    });
   });
 }
