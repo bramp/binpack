@@ -13,43 +13,58 @@ int compareTo(num a, num b) {
 }
 
 /// Compare two rectangles by height, decending.
-int Function(Rectangle a, Rectangle b) compareByHeight =
-    (Rectangle a, Rectangle b) => compareTo(a.height, b.height);
+int Function(Rectangle a, Rectangle b) compareByHeight = (a, b) =>
+    compareTo(a.height, b.height);
 
 /// Compare two rectangles by area, decending.
-int Function(Rectangle a, Rectangle b) compareByArea =
-    (Rectangle a, Rectangle b) => compareTo(a.area, b.area);
+int Function(Rectangle a, Rectangle b) compareByArea = (a, b) =>
+    compareTo(a.area, b.area);
 
 /// Compare two rectangles by width, decending.
-int Function(Rectangle a, Rectangle b) compareByWidth =
-    (Rectangle a, Rectangle b) => compareTo(a.width, b.width);
+int Function(Rectangle a, Rectangle b) compareByWidth = (a, b) =>
+    compareTo(a.width, b.width);
 
 /// Compare two rectangles by perimeter, decending. (That is 2*width+height).
-int Function(Rectangle a, Rectangle b) compareByPerimeter =
-    (Rectangle a, Rectangle b) => compareTo(a.perimeter, b.perimeter);
+int Function(Rectangle a, Rectangle b) compareByPerimeter = (a, b) =>
+    compareTo(a.perimeter, b.perimeter);
 
+/// Extensions on [Rectangle] to add [area] and [perimeter].
 extension RectangleExt<T extends num> on Rectangle<T> {
+  /// The area of the rectangle.
   T get area => (width * height) as T;
+
+  /// The perimeter of the rectangle.
   T get perimeter => (2 * (width + height)) as T;
 }
 
+/// Extensions on [Rectangle] to add [split].
 extension RectangleSplitExt<T extends num> on Rectangle<T> {
   /// Takes [other] and places it into the top left corner of this, splitting
-  /// this Rectangle into two. Returns the two new rectangles, the smaller split, and a bigger split.
+  /// this Rectangle into two. Returns the two new rectangles, the smaller
+  /// split, and a bigger split.
   /// If other is larger than this this an exception is thrown. If other fits
-  /// perfectly then a empty list is returned. If other fits perfect in one dimension
-  /// then a single split is returned.
+  /// perfectly then a empty list is returned. If other fits perfect in one
+  /// dimension then a single split is returned.
   ///
   /// ![Example diagram](https://github.com/TeamHypersomnia/rectpack2D/raw/master/images/diag01.png)
   (Rectangle<T>?, Rectangle<T>?) split(Rectangle<T> other) {
     // The input is already checked in [pack],
-    assert(other.left == 0 && other.top == 0);
-    assert(other.area > 0);
+    assert(
+      other.left == 0 && other.top == 0,
+      'Other rectangle must be at (0,0)',
+    );
+    assert(other.area > 0, 'Other rectangle must have positive area');
 
     // The free area should always stay positive, and integer.
-    assert(area > 0);
-    assert(width.roundToDouble() == width);
-    assert(height.roundToDouble() == height);
+    assert(area > 0, 'This rectangle must have positive area');
+    assert(
+      width.roundToDouble() == width,
+      'Width must be an integer for splitting',
+    );
+    assert(
+      height.roundToDouble() == height,
+      'Height must be an integer for splitting',
+    );
 
     if (other.width > width || other.height > height) {
       throw Exception("Can't split a smaller rectangle into a larger one");

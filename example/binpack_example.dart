@@ -1,22 +1,24 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print // This is an example.
 
 import 'dart:math';
 
 import 'package:binpack/binpack.dart';
 
+/// Main entry point for the example.
 void main() {
   // Create a list of key and rectanges.
   // The key can be anything specific to your application.
-  final rects = [
-    ('image1.png', const Rectangle(0, 0, 100, 200)), // Image 100x200 pixels
-    ('image2.png', const Rectangle(0, 0, 32, 64)),
-    ('image3.png', const Rectangle(0, 0, 128, 100)),
-    ('image4.png', const Rectangle(0, 0, 300, 400)),
+  final rects = <(String, Rectangle<int>)>[
+    ('image1.png', const Rectangle<int>(0, 0, 100, 200)),
+    ('image2.png', const Rectangle<int>(0, 0, 32, 64)),
+    ('image3.png', const Rectangle<int>(0, 0, 128, 100)),
+    ('image4.png', const Rectangle<int>(0, 0, 300, 400)),
   ];
 
   // Target the max size 4096 x 4096.
-  var results = Binpacker(4096, 4096) //
-      .pack(rects);
+  var results =
+      Binpacker<String>(4096, 4096) //
+          .pack(rects);
 
   // The size we actually needed (which may be smaller than 4096, 4096)
   print(results.boundingBox());
@@ -40,7 +42,7 @@ void main() {
 
   // If you don't know the target size, use SearchBinpacker. It will iteratively
   // try different target sizes, and return the optimal one.
-  results = SearchBinpacker().pack(rects);
+  results = SearchBinpacker<String>().pack(rects);
 
   // The size we actually needed:
   print(results.stats());

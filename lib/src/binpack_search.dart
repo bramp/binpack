@@ -8,46 +8,57 @@ import 'package:collection/collection.dart';
 class SearchBinpacker<K> {
   /// Create a new SearchBinpacker.
   SearchBinpacker({this.searchAttempts = 100});
+
   Result<K> _best = const Result();
 
   /// How many different widths to try. The higher the number, the better the
   /// placements, but the slower the search.
   final int searchAttempts;
 
+  /// Pack the rectangles into the smallest possible space.
   Result<K> pack(List<(K, Rectangle)> inputs) {
     // Sort by height descending tends to produce good results
     // Make a copy so we don't modify the input.
-    inputs = [...inputs]..sort((a, b) => compareByHeight(a.$2, b.$2));
+    final actualInputs = [...inputs]
+      ..sort((a, b) => compareByHeight(a.$2, b.$2));
 
-    final maxWidth = inputs.map((e) => e.$2.width).max;
-    final sumWidth = inputs.map((e) => e.$2.width).sum;
-    final maxHeight = inputs.map((e) => e.$2.height).max;
-    final sumHeight = inputs.map((e) => e.$2.height).sum;
+    final maxWidth = actualInputs.map((e) => e.$2.width).max;
+    final sumWidth = actualInputs.map((e) => e.$2.width).sum;
+    final maxHeight = actualInputs.map((e) => e.$2.height).max;
+    final sumHeight = actualInputs.map((e) => e.$2.height).sum;
 
     // Starting point
     // We can fit into a long rectange, that is the sum of the width, and max
     // of the heights. Effectively making a single row
-    _best = Binpacker<K>(sumWidth, maxHeight) //
-        .packInOrder(inputs);
+    _best =
+        Binpacker<K>(sumWidth, maxHeight) //
+            .packInOrder(actualInputs);
 
-    assert(_best.discards
-        .isEmpty); // TODO Fix this, as it fails, if we sort by any other dimenion.
+    assert(
+      _best.discards.isEmpty,
+      'Every square must fit in the sumWidth * maxHeight space',
+    ); // TODO(bramp): Fix this if we sort by any other dimenion.
 
-    num bestArea = _best.boundingBox().area;
+    var bestArea = _best.boundingBox().area;
 
     // Now we can search for the best packing
     //
     // The original https://github.com/TeamHypersomnia/rectpack2D implies this
     // can be done as a binary search, but I'm not sure how, since the ratio
-    // does not monotonically increase. Instead we just try at uniform intervals.
+    // does not monotonically increase. Instead we just try at uniform
+    // intervals.
     final interval = (sumWidth / searchAttempts).ceil();
-    for (num width = maxWidth; width < sumWidth; width += interval) {
-      final results = Binpacker<K>(width, sumHeight) //
-          .packInOrder(inputs);
+    for (var width = maxWidth; width < sumWidth; width += interval) {
+      final results =
+          Binpacker<K>(width, sumHeight) //
+              .packInOrder(actualInputs);
 
       // Since we allowed maxWidth * sumHeight we should always be able to fit
       // every square.
-      assert(results.discards.isEmpty);
+      assert(
+        results.discards.isEmpty,
+        'Every square must fit in the width * sumHeight space',
+      );
 
       final area = results.boundingBox().area;
       if (results.discards.isEmpty && area < bestArea) {
@@ -59,5 +70,6 @@ class SearchBinpacker<K> {
     return _best;
   }
 
+  /// Returns a string with some stats about the best packing found.
   String stats() => _best.stats();
 }

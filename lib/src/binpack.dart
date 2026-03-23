@@ -4,14 +4,19 @@ import 'dart:math';
 import 'package:binpack/src/rectangle.dart';
 import 'package:collection/collection.dart';
 
+/// A single item in the linked list of free spaces.
 final class EntryItem extends LinkedListEntry<EntryItem> {
+  /// Create a new EntryItem with a rectangle.
   EntryItem(this.rect);
+
+  /// The free rectangle.
   final Rectangle rect;
 }
 
 /// The result of bin packing. Look at [discards] and [placements] for where
 /// each rectangle ended up.
 class Result<K> {
+  /// Create a new Result with discards and placements.
   const Result({
     this.discards = const [],
     this.placements = const [],
@@ -23,21 +28,18 @@ class Result<K> {
   /// The placements of the rectangles.
   final List<(K, Rectangle)> placements;
 
-  /// Returns the smallest bounding box after packing. This will always be smaller or equal
-  /// to the input dimensions.
-  Rectangle boundingBox() {
+  /// Returns the smallest bounding box after packing. This will always be
+  /// smaller or equal to the input dimensions.
+  Rectangle<num> boundingBox() {
     if (placements.isEmpty) {
       return const Rectangle(0, 0, 0, 0);
     }
 
-    // The below is a faster version of this:
-    //return placements.map((e) => e.$2).reduce((a, b) => a.boundingBox(b));
-
     final p = placements[0].$2;
-    num minX = p.left, //
-        maxX = p.right,
-        minY = p.top,
-        maxY = p.bottom;
+    var minX = p.left;
+    var maxX = p.right;
+    var minY = p.top;
+    var maxY = p.bottom;
 
     for (final p in placements) {
       final rect = p.$2;
@@ -58,7 +60,8 @@ class Result<K> {
     return Rectangle(minX, minY, maxX - minX, maxY - minY);
   }
 
-  /// The percentage of space used in the min bounding box of all the placements.
+  /// The percentage of space used in the min bounding box of all the
+  /// placements.
   double ratio() {
     final usedArea = placements.fold<num>(0, (a, b) => a + b.$2.area);
     final bounds = boundingBox();
@@ -66,10 +69,12 @@ class Result<K> {
     return usedArea / bounds.area;
   }
 
+  /// Returns a string with some stats about the packing.
   String stats() {
     final bounds = boundingBox();
     return '${bounds.width}x${bounds.height}'
-        ' placed: ${placements.length} / ${placements.length + discards.length},'
+        ' placed: ${placements.length} / '
+        '${placements.length + discards.length},'
         ' percent: ${ratio() * 100}%';
   }
 }
@@ -118,10 +123,12 @@ class Binpacker<K> {
   /// Returns the index where [element] should be in the [start] sorted list.
   /// Uses the area of the elements to make the decision.
   static EntryItem? _quickLowerBound(
-      EntryItem? start, final Rectangle element) {
+    EntryItem? start,
+    Rectangle element,
+  ) {
     // Use a linear search
     final area = element.area;
-    for (EntryItem? i = start; i != null; i = i.next) {
+    for (var i = start; i != null; i = i.next) {
       if (i.rect.area <= area) {
         return i;
       }
@@ -133,9 +140,9 @@ class Binpacker<K> {
   /// Pack the rectangles in to the space in the order they are given.
   /// As opposed to [pack], which may reorder the input to get a better packing.
   Result<K> packInOrder(Iterable<(K, Rectangle)> inputs) {
-    inputs = UnmodifiableListView(inputs);
+    final actualInputs = UnmodifiableListView(inputs);
 
-    for (final input in inputs) {
+    for (final input in actualInputs) {
       final key = input.$1;
       final rect = input.$2;
       final best = _bestFitIndex(rect);
@@ -152,7 +159,7 @@ class Binpacker<K> {
       // Place the input in the top left corner
       _placements.add((
         key,
-        Rectangle(freeRect.left, freeRect.top, rect.width, rect.height)
+        Rectangle(freeRect.left, freeRect.top, rect.width, rect.height),
       ));
 
       // Add the new splits.
@@ -185,7 +192,10 @@ class Binpacker<K> {
       // We do this last, so we can reference best in the quickLowerBound search.
       best.unlink();
 
-      assert(_free.map((e) => e.rect).isSorted(compareByArea));
+      assert(
+        _free.map((e) => e.rect).isSorted(compareByArea),
+        'Free list must be sorted by area',
+      );
     }
 
     return Result(
@@ -195,30 +205,30 @@ class Binpacker<K> {
   }
 
   /// Pack the rectangles in to the space, possibly after reordering.
-  // TODO Allow the sort order to be specified.
-  Result pack(
-    /// The rectangles to pack, with a opaque key.
+  // TODO(bramp): Allow the sort order to be specified.
+  Result<K> pack(
     List<(K, Rectangle)> inputs, {
-    /// The sort order to use when packing the rectangles.
-    /// See [compareByArea], [compareByWidth], [compareByHeight].
     int Function(Rectangle a, Rectangle b)? sortBy,
   }) {
     for (final input in inputs) {
       if (input.$2.left != 0 || input.$2.top != 0) {
         throw Exception(
-            'All rectangles must have left and top set to 0, ${input.$1} does not.');
+          'All rectangles must have left and top set to 0, '
+          '${input.$1} does not.',
+        );
       }
       if (input.$2.area <= 0) {
         throw Exception(
-            'All rectangles must have a positive area, ${input.$1} does not.');
+          'All rectangles must have a positive area, ${input.$1} does not.',
+        );
       }
     }
 
     // Sort by height decending tends to produce good results
     // Make a copy so we don't modify the input.
     sortBy ??= compareByHeight;
-    inputs = [...inputs]..sort((a, b) => sortBy!(a.$2, b.$2));
+    final sortedInputs = [...inputs]..sort((a, b) => sortBy!(a.$2, b.$2));
 
-    return packInOrder(inputs);
+    return packInOrder(sortedInputs);
   }
 }
